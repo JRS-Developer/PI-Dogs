@@ -19,7 +19,7 @@ const getDogs = async (req, res) => {
     }
     : {};
 
-  condition.attributes = ["id", "name", "weight", "height"];
+  condition.attributes = ["id", "name", "image", "weight", "height"];
   condition.include = {
     model: Temperament,
     attributes: ["name"],
@@ -67,7 +67,7 @@ const getDogById = async (req, res) => {
   const breedDB =
     isUUID(idRaza) &&
     (await Dog.findByPk(idRaza, {
-      attributes: ["id", "name", "weight", "height", "life_span"],
+      attributes: ["id", "name", "image", "weight", "height", "life_span"],
       include: {
         model: Temperament,
         attributes: ["name"],
@@ -105,6 +105,7 @@ const createDog = async (req, res) => {
       max_height,
       min_weight,
       max_weight,
+      image,
       life_span,
       temperaments,
     } = req.body;
@@ -128,6 +129,7 @@ const createDog = async (req, res) => {
         name,
         height: `${min_height} - ${max_height}`,
         weight: `${min_weight} - ${max_weight}`,
+        image,
         min_height,
         max_height,
         min_weight,
@@ -138,9 +140,11 @@ const createDog = async (req, res) => {
 
     //INFO: check if the name is already taked, if true, then return a message that already is created if not, the add the temperaments and show a succesfull message
     const [breedDB, created] = await Dog.findOrCreate(condition);
-
     if (created) {
-      temperaments?.length && (await breedDB.setTemperaments(temperaments));
+      temperaments?.length && temperaments.forEach(async (el) => {
+        const temp = await Temperament.findOne({ where: { name: el } });
+        temp?.id && (await breedDB.setTemperaments(temp.id));
+      });
 
       return res.json({ message: "Data saved sucessfully" });
     }
@@ -154,5 +158,5 @@ const createDog = async (req, res) => {
 module.exports = {
   getDogs,
   getDogById,
-  createDog
+  createDog,
 };

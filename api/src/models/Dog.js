@@ -13,6 +13,9 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    image: {
+      type: DataTypes.STRING,
+    },
     min_height: {
       type: DataTypes.INTEGER,
       allowNull: false,
