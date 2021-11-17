@@ -6,6 +6,9 @@ import NotFound from "./pages/NotFound";
 import CreateBreed from "./pages/CreateBreed";
 import NavBar from "./components/NavBar/NavBar";
 import { Provider } from "use-http";
+import { Outlet } from "react-router-dom";
+import "./styles/App.scss";
+import "normalize.css";
 
 const { REACT_APP_API_URL } = process.env;
 
@@ -15,7 +18,17 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Start />} />
-          <Route path="/" element={<NavBar />}>
+          <Route
+            path="/"
+            element={
+              <>
+                <NavBar />
+                <main>
+                  <Outlet />
+                </main>
+              </>
+            }
+          >
             <Route path="home" element={<Principal />} />
             <Route path="breed/:idBreed" element={<BreedInfo />} />
             <Route path="create" element={<CreateBreed />} />

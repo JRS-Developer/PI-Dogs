@@ -1,28 +1,18 @@
-import useFetch from "use-http";
-import { useEffect, useCallback } from "react";
-import { setBreeds } from "../slices/BreedsSlice";
-import { useDispatch } from "react-redux";
-import BreedsList from "../components/BreedsSection/BreedsList";
-import FilterSection from '../components/FilterSection/FilterSection'
+import BreedsPagination from "../components/BreedsSection/BreedsPagination";
+import FilterSection from "../components/FilterSection/FilterSection";
+import useGetBreeds from "../hooks/useGetBreeds";
 
 const Principal = () => {
-  const { get, response, loading, error } = useFetch();
-  const dispatch = useDispatch();
-
-  const getBreeds = useCallback(async () => {
-    const data = await get("dogs");
-    response.ok && dispatch(setBreeds(data));
-  }, [get, response, dispatch]);
-
-  useEffect(() => {
-    getBreeds();
-  }, [getBreeds]);
+  const { error, loading } = useGetBreeds();
 
   return (
     <div>
-      <h1>Yo soy la pagina principal</h1>
       <FilterSection />
-      {loading && !error ? <div>Loading...</div> : <BreedsList />}
+      {loading && !error ? (
+        <div>Loading...</div>
+      ) : (
+          <BreedsPagination breedsPerPage={8} />
+        )}
       {error && <div>An error has ocurred</div>}
     </div>
   );

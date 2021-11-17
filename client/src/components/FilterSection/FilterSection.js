@@ -1,44 +1,75 @@
-import { setTemperaments } from "../../slices/TemperamentsSlice";
-import useFetch from "use-http";
-import { useEffect, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import {
+  sortBreeds,
+  filterByTemperament,
+  filterByType,
+} from "../../actions/BreedsActions";
+import Input from "../Input/Input";
+import useGetTemperaments from "../../hooks/useGetTemperaments";
+import useGetBreeds from "../../hooks/useGetBreeds";
+import { useState, useEffect } from "react";
 
 const FilterSection = () => {
-  const { get, response } = useFetch();
-  const { temperaments } = useSelector((state) => state.temperaments);
+  const [name, setName] = useState("");
+  const [query, setQuery] = useState("");
+  const { temperaments } = useGetTemperaments();
   const dispatch = useDispatch();
+  useGetBreeds(name);
 
-  const getTemperaments = useCallback(async () => {
-    const data = await get("temperament");
-    response.ok && dispatch(setTemperaments(data));
-  }, [response, dispatch, get]);
+  const handleChangeName = (e) => setQuery(e.target.value);
+
+  const handleChangeType = (e) => dispatch(filterByType(e.target.value));
+
+  const handleChangeTemp = (e) => dispatch(filterByTemperament(e.target.value));
+
+  const handleChangeSort = (e) => {
+    const { order, param } = e.target?.selectedOptions[0]?.dataset;
+    dispatch(sortBreeds(order, param));
+  };
 
   useEffect(() => {
-    getTemperaments();
-  }, [getTemperaments]);
+    const changeName = (value) => setName(value);
+
+    const timeout = setTimeout(() => changeName(query), 500);
+    return () => clearTimeout(timeout);
+  }, [query]);
 
   return (
     <div>
-      <input placeholder="Search By Name" name="name" />
-      <input placeholder="Temperaments" list="temperaments" />
-      <datalist id="temperaments" name="temperaments">
+      <Input
+        placeholder="Search By Name"
+        name="name"
+        onChange={handleChangeName}
+      />
+      <select name="temperament" defaultValue="" onChange={handleChangeTemp}>
+        <option value="">All</option>
         {temperaments.map((temp) => (
-          <option key={temp.name} value={temp.name} />
+          <option key={temp.name} value={temp.name}>
+            {temp.name}
+          </option>
         ))}
-      </datalist>
-      <select name="type">
-        <option value="all">All</option>
+      </select>
+      <select name="type" onChange={handleChangeType}>
+        <option value="">All</option>
         <option value="real">Real</option>
         <option value="created">Created</option>
       </select>
-      <select name="order">
-        <option value="" disabled selected hidden>
+      <select name="sort" defaultValue="" onChange={handleChangeSort}>
+        <option value="" disabled hidden>
           Sort By
         </option>
-        <option value="A-Z">A-Z</option>
-        <option value="Z-A">Z-A</option>
-        <option value="min_weight">Min Weight</option>
-        <option value="max_weight">Max Weight</option>
+        <option data-param="name" data-order="ASC">
+          A-Z
+        </option>
+        <option data-param="name" data-order="DESC">
+          Z-A
+        </option>
+        <option data-param="weight" data-order="ASC">
+          Min Weight
+        </option>
+        <option data-param="weight" data-order="DESC">
+          Max Weight
+        </option>
       </select>
     </div>
   );

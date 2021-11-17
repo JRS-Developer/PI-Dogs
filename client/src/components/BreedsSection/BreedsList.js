@@ -1,16 +1,13 @@
-import BreedItem from "./BreedItem";
-import { useSelector } from 'react-redux'
+import BreedCard from "./BreedCard";
 
-const BreedsList = () => {
-  const { breeds } = useSelector((state) => state.breeds)
-
-  return (
-    <ul>
-      {breeds?.map((b) => (
-        <BreedItem {...b} key={b.id} />
-      ))}
-    </ul>
-  );
-};
+const BreedsList = ({ breeds }) => (
+  <ul>
+    {breeds.length ? (
+      breeds.map((b) => <BreedCard {...b} key={b.id} />)
+    ) : (
+        <div>No Results</div>
+      )}
+  </ul>
+);
 
 export default BreedsList;

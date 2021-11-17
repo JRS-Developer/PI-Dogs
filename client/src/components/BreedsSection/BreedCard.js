@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import DefaultImg from "../../images/dog.png";
 
-const BreedItem = ({ id, name, image, temperament, weight }) => {
+const BreedCard = ({ id, name, image, temperament, weight }) => {
   return (
     <li>
       <Link to={`../breed/${id}`}>
@@ -14,4 +14,4 @@ const BreedItem = ({ id, name, image, temperament, weight }) => {
   );
 };
 
-export default BreedItem;
+export default BreedCard;
