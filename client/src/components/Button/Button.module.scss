@@ -1,0 +1,39 @@
+@import '../../styles/variables.scss';
+@use 'sass:color';
+
+.button {
+  display:flex;
+  gap: .5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  background: $color-primary;
+  color: $color-secondary;
+  border-radius: 999px;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-weight: 700;
+  line-height: 24px;
+  opacity: 1;
+  outline: none;
+  padding: 8px 18px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: fit-content;
+  word-break: break-word;
+  transition: box-shadow .3s;
+  border: 0;
+}
+
+.button:hover {
+  box-shadow: $color-primary 0 10px 20px -10px;
+  transition: box-shadow .3s;
+}
+
+.button:active {
+  opacity: .8;
+}
+
+.button:focus-visible{
+  outline: 1px solid $gray;
+}
