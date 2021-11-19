@@ -6,7 +6,7 @@ const Principal = () => {
   const { error, loading } = useGetBreeds();
 
   return (
-    <div>
+    <>
       <FilterSection />
       {loading && !error ? (
         <div>Loading...</div>
@@ -14,7 +14,7 @@ const Principal = () => {
           <BreedsPagination breedsPerPage={8} />
         )}
       {error && <div>An error has ocurred</div>}
-    </div>
+    </>
   );
 };
 

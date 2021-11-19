@@ -106,7 +106,8 @@ const createDog = async (req, res) => {
       min_weight,
       max_weight,
       image,
-      life_span,
+      min_years,
+      max_years,
       temperaments,
     } = req.body;
 
@@ -119,7 +120,8 @@ const createDog = async (req, res) => {
         .status(403)
         .json({ message: "Please provide the min and max height and weight" });
 
-    const lifeSpanY = life_span ? `${life_span} years` : undefined;
+    const lifeSpanY =
+      min_years && max_years ? `${min_years} - ${max_years} years` : undefined;
 
     const condition = {
       where: {
@@ -130,10 +132,6 @@ const createDog = async (req, res) => {
         height: `${min_height} - ${max_height}`,
         weight: `${min_weight} - ${max_weight}`,
         image,
-        min_height,
-        max_height,
-        min_weight,
-        max_weight,
         life_span: lifeSpanY,
       },
     };
@@ -141,10 +139,11 @@ const createDog = async (req, res) => {
     //INFO: check if the name is already taked, if true, then return a message that already is created if not, the add the temperaments and show a succesfull message
     const [breedDB, created] = await Dog.findOrCreate(condition);
     if (created) {
-      temperaments?.length && temperaments.forEach(async (el) => {
-        const temp = await Temperament.findOne({ where: { name: el } });
-        temp?.id && (await breedDB.setTemperaments(temp.id));
-      });
+      temperaments?.length &&
+        temperaments.forEach(async (el) => {
+          const temp = await Temperament.findOne({ where: { name: el } });
+          temp?.id && (await breedDB.setTemperaments(temp.id));
+        });
 
       return res.json({ message: "Data saved sucessfully" });
     }

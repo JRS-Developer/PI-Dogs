@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
 import Start from "./pages/Start";
 import Principal from "./pages/Principal";
 import BreedInfo from "./pages/BreedInfo";
@@ -6,9 +6,7 @@ import NotFound from "./pages/NotFound";
 import CreateBreed from "./pages/CreateBreed";
 import NavBar from "./components/NavBar/NavBar";
 import { Provider } from "use-http";
-import { Outlet } from "react-router-dom";
 import "./styles/App.scss";
-import "normalize.css";
 
 const { REACT_APP_API_URL } = process.env;
 

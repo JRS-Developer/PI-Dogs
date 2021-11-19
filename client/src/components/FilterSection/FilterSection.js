@@ -8,6 +8,8 @@ import Input from "../Input/Input";
 import useGetTemperaments from "../../hooks/useGetTemperaments";
 import useGetBreeds from "../../hooks/useGetBreeds";
 import { useState, useEffect } from "react";
+import styles from './FilterSection.module.scss'
+import Select from '../Select/Select'
 
 const FilterSection = () => {
   const [name, setName] = useState("");
@@ -35,26 +37,26 @@ const FilterSection = () => {
   }, [query]);
 
   return (
-    <div>
+    <div className={styles.container}>
       <Input
         placeholder="Search By Name"
         name="name"
         onChange={handleChangeName}
       />
-      <select name="temperament" defaultValue="" onChange={handleChangeTemp}>
+      <Select name="temperament" defaultValue="" onChange={handleChangeTemp}>
         <option value="">All</option>
         {temperaments.map((temp) => (
           <option key={temp.name} value={temp.name}>
             {temp.name}
           </option>
         ))}
-      </select>
-      <select name="type" onChange={handleChangeType}>
+      </Select>
+      <Select name="type" onChange={handleChangeType}>
         <option value="">All</option>
         <option value="real">Real</option>
         <option value="created">Created</option>
-      </select>
-      <select name="sort" defaultValue="" onChange={handleChangeSort}>
+      </Select>
+      <Select name="sort" defaultValue="" onChange={handleChangeSort}>
         <option value="" disabled hidden>
           Sort By
         </option>
@@ -70,7 +72,7 @@ const FilterSection = () => {
         <option data-param="weight" data-order="DESC">
           Max Weight
         </option>
-      </select>
+      </Select>
     </div>
   );
 };

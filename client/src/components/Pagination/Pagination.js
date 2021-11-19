@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { CgChevronLeftO, CgChevronRightO } from 'react-icons/cg'
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import Button from "../Button/Button";
+import styles from "./Pagination.module.scss";
 
 const Pagination = ({ itemsPerPage, allItems, changePage, currentPage }) => {
   const [pageNumberLimit] = useState(5);
@@ -32,38 +34,60 @@ const Pagination = ({ itemsPerPage, allItems, changePage, currentPage }) => {
   const renderPageNumbers = pages.map((number) =>
     number < maxPageNumberLimit + 1 && number > minPageNumberLimit ? (
       <li key={number}>
-        <button onClick={() => changePage(number)}>{number}</button>
+        <Button
+          className={`${styles.button} ${
+            number === currentPage ? styles.active : ""
+            }`}
+          onClick={() => changePage(number)}
+        >
+          {number}
+        </Button>
       </li>
     ) : null
   );
 
   let pageIncrementBtn = null;
   if (pages.length > maxPageNumberLimit) {
-    pageIncrementBtn = <li onClick={handleNextBtn}> &hellip; </li>;
+    pageIncrementBtn = (
+      <li onClick={handleNextBtn}>
+        <Button className={styles.button}>&hellip;</Button>
+      </li>
+    );
   }
 
   let pageDecrementBtn = null;
   if (minPageNumberLimit >= 1) {
-    pageDecrementBtn = <li onClick={handlePrevBtn}> &hellip; </li>;
+    pageDecrementBtn = (
+      <li onClick={handlePrevBtn}>
+        <Button className={styles.button}>&hellip;</Button>
+      </li>
+    );
   }
 
   return (
-    <ul>
+    <ul className={styles.pagination}>
       <li>
-        <button onClick={handlePrevBtn} disabled={currentPage === pages[0]}>
-          <CgChevronLeftO />
-        </button>
+        <Button
+          className={styles.button}
+          onClick={handlePrevBtn}
+          disabled={pages.length === 0 || currentPage === pages[0]}
+        >
+          <FaChevronLeft />
+        </Button>
       </li>
       {pageDecrementBtn}
       {renderPageNumbers}
       {pageIncrementBtn}
       <li>
-        <button
+        <Button
+          className={styles.button}
           onClick={handleNextBtn}
-          disabled={currentPage === pages[pages.length - 1]}
+          disabled={
+            pages.length === 0 || currentPage === pages[pages.length - 1]
+          }
         >
-          <CgChevronRightO />
-        </button>
+          <FaChevronRight />
+        </Button>
       </li>
     </ul>
   );

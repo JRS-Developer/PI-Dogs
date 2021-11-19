@@ -37,3 +37,12 @@
 .button:focus-visible{
   outline: 1px solid $gray;
 }
+
+.button:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+.button:disabled:hover {
+  box-shadow: none;
+}
