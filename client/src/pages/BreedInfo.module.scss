@@ -1,3 +1,5 @@
+@import "../styles/variables.scss";
+
 .container {
   display: flex;
   flex-direction: column;
@@ -5,7 +7,12 @@
   padding: 1rem;
 }
 
+.info {
+  display: flex;
+}
+
 .img {
+  border-radius: 10px;
   width: 400px;
   height: 400px;
   object-fit: cover;

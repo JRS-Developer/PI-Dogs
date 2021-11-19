@@ -9,6 +9,16 @@ import Select from "../components/Select/Select";
 import { HiOutlineUpload } from "react-icons/hi";
 import styles from "./CreateBreed.module.scss";
 
+const initialInputs = {
+  name: "",
+  min_weight: "",
+  max_weight: "",
+  min_height: "",
+  max_height: "",
+  min_years: "",
+  max_years: "",
+};
+
 const CreateBreed = () => {
   const { temperaments: allTemperaments } = useGetTemperaments();
   let { post, cache, loading } = useFetch();
@@ -16,7 +26,8 @@ const CreateBreed = () => {
   const [loadingImg, setLoadingImg] = useState(false);
   const [image, setImage] = useState(null);
   const [temps, setTemps] = useState([]);
-  const [selectedTemps, setSelelectTemps] = useState([]);
+  const [inputs, setInputs] = useState(initialInputs);
+  const [selectedTemps, setSelectedTemps] = useState([]);
 
   const saveDog = async (dog) => {
     await post("dogs", dog);
@@ -29,6 +40,11 @@ const CreateBreed = () => {
     return image;
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setInputs((old) => ({ ...old, [name]: value }));
+  };
+
   const handleChangeImg = (e) => setImage(e.target.files[0]);
 
   const handleChangeTemps = (e) => {
@@ -37,36 +53,31 @@ const CreateBreed = () => {
 
     if (value && !isSelected) {
       // Añado el temperamento en el estado de selectedTemps, asi puedo mostrarlos al usuario.
-      setSelelectTemps((old) => [...old, value]);
+      setSelectedTemps((old) => [...old, value]);
     }
   };
 
   const removeSelected = (name) =>
-    setSelelectTemps((old) => old.filter((t) => t !== name));
+    setSelectedTemps((old) => old.filter((t) => t !== name));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const form = {};
+    const form = { ...inputs, temperaments: selectedTemps };
 
-    for (let input of e.target) {
-      // recorro cada input, si no es tipo file, solo le pongo el value
-      if (input.type !== "file") {
-        form[input.name] = input.value;
-        input.value = ""
-      } else if (input.type === "file" && input.files.length) {
-        // Si es tipo file y tiene algun archivo seleccionado, entonces, guarda la imagen en Cloudinary, y devuelve el url. Para guardarlo en el backend
-        try {
-          const image = await saveImage(input.files[0]);
-          image?.url && (form[input.name] = image.url);
-        } catch (e) {
-          console.error(e);
-          return;
-        }
+    if (image) {
+      try {
+        const response = await saveImage(image);
+        response?.url && (form.image = response.url);
+      } catch (e) {
+        console.error(e);
+        return;
       }
     }
-    // Guardo los temperamentos seleccionados
-    form["temperaments"] = selectedTemps;
-    setSelelectTemps([])
+
+    // Reinicio el formulario
+    setSelectedTemps([]);
+    setInputs(initialInputs);
+    setImage(null)
 
     saveDog(form);
     setLoadingImg(false);
@@ -85,7 +96,14 @@ const CreateBreed = () => {
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.oneInput}>
             <label htmlFor="name">Name</label>
-            <Input placeholder="Name" id="name" name="name" required />
+            <Input
+              placeholder="Name"
+              id="name"
+              name="name"
+              required
+              value={inputs.name}
+              onChange={handleChange}
+            />
           </div>
           <div className={styles.multiInput}>
             <label htmlFor="min_weight">Min Weight</label>
@@ -95,7 +113,10 @@ const CreateBreed = () => {
               placeholder="Min Weight"
               required
               name="min_weight"
+              min="1"
               id="min_weight"
+              value={inputs.min_weight}
+              onChange={handleChange}
             />
             <Input
               type="number"
@@ -103,6 +124,9 @@ const CreateBreed = () => {
               required
               name="max_weight"
               id="max_weight"
+              min="1"
+              value={inputs.max_weight}
+              onChange={handleChange}
             />
           </div>
           <div className={styles.multiInput}>
@@ -114,6 +138,9 @@ const CreateBreed = () => {
               required
               name="min_height"
               id="min_height"
+              min="1"
+              value={inputs.min_height}
+              onChange={handleChange}
             />
             <Input
               type="number"
@@ -121,6 +148,9 @@ const CreateBreed = () => {
               required
               name="max_height"
               id="max_height"
+              min="1"
+              value={inputs.max_height}
+              onChange={handleChange}
             />
           </div>
           <div className={styles.multiInput}>
@@ -132,6 +162,9 @@ const CreateBreed = () => {
               required
               name="min_years"
               id="min_years"
+              min="1"
+              value={inputs.min_years}
+              onChange={handleChange}
             />
             <Input
               type="number"
@@ -139,6 +172,9 @@ const CreateBreed = () => {
               required
               name="max_years"
               id="max_years"
+              min="1"
+              value={inputs.max_years}
+              onChange={handleChange}
             />
           </div>
           <div className={styles.multiInput}>

@@ -14,12 +14,21 @@ const BreedInfo = () => {
 
   const goBack = () => navigate("../home");
 
+  const redirect = useCallback(
+    () => navigate("../home", { replace: true }),
+    [navigate]
+  );
+
   const getBreedInfo = useCallback(async () => {
     const data = await get(`dogs/${idBreed}`);
-    response.ok && setBreed(data);
-  }, [get, idBreed, response]);
 
-  const temperaments = breed?.temperaments.map((t) => t.name).join(",");
+    /// SI el servidor retorna un message, en vez de un array, entonces significa que no hay una raza que coincida con el id, entonces redirigue a la pagina principal
+    if (data.message) return redirect();
+
+    response.ok && setBreed(data);
+  }, [get, idBreed, response, redirect]);
+
+  const temperaments = breed?.temperaments?.map((t) => t.name).join(",");
 
   useEffect(() => {
     getBreedInfo();
@@ -36,7 +45,7 @@ const BreedInfo = () => {
       {loading ? (
         <div>Loading...</div>
       ) : (
-          <div>
+          <div className={styles.info}>
             <img
               className={styles.img}
               src={breed.image}
