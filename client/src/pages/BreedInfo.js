@@ -5,6 +5,7 @@ import Button from "../components/Button/Button";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import styles from "./BreedInfo.module.scss";
+import defaultImg from '../images/dog.png'
 
 const BreedInfo = () => {
   const { get, response, loading } = useFetch();
@@ -48,7 +49,7 @@ const BreedInfo = () => {
           <div className={styles.info}>
             <img
               className={styles.img}
-              src={breed.image}
+              src={breed.image ? breed.image : defaultImg}
               alt={breed.name}
               title={breed.name}
             />

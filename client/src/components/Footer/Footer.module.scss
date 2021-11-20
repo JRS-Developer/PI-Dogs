@@ -1,0 +1,19 @@
+@import '../../styles/variables.scss';
+
+.footer {
+  display: flex;
+}
+
+.footer a  {
+  text-decoration: none;
+  color: $color-primary;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+.icon {
+  color: $error;
+}
+

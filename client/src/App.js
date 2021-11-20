@@ -2,9 +2,9 @@ import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom
 import Start from "./pages/Start";
 import Principal from "./pages/Principal";
 import BreedInfo from "./pages/BreedInfo";
-import NotFound from "./pages/NotFound";
 import CreateBreed from "./pages/CreateBreed";
 import NavBar from "./components/NavBar/NavBar";
+import Footer from './components/Footer/Footer'
 import { Provider } from "use-http";
 import "./styles/App.scss";
 
@@ -24,6 +24,7 @@ function App() {
                 <main>
                   <Outlet />
                 </main>
+                <Footer />
               </>
             }
           >
@@ -31,7 +32,6 @@ function App() {
             <Route path="breed/:idBreed" element={<BreedInfo />} />
             <Route path="create" element={<CreateBreed />} />
           </Route>
-          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </Provider>

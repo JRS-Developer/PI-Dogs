@@ -1,9 +1,9 @@
-import styles from "./Start.module.scss";
 import useGetBreeds from "../hooks/useGetBreeds";
 import { useState, useEffect, useCallback } from "react";
 import Button from "../components/Button/Button";
 import { useNavigate } from "react-router-dom";
 import defaultImg from "../images/dog.png";
+import styles from "./Start.module.scss";
 
 const Start = () => {
   const { breeds } = useGetBreeds();
