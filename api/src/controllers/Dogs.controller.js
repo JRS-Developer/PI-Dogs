@@ -145,9 +145,9 @@ const createDog = async (req, res) => {
           temp?.id && (await breedDB.setTemperaments(temp.id));
         });
 
-      return res.json({ message: "Data saved sucessfully" });
+      return res.status(201).json({ message: "Data saved sucessfully" });
     }
-    return res.json({ message: "There is already a breed with that name" });
+    return res.status(303).json({ message: "There is already a breed with that name" });
   } catch (e) {
     res.status(500).json({ message: "An error with the server has ocurred" });
     console.error(e);
