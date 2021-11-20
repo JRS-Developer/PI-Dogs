@@ -1,20 +1,41 @@
 @import '../styles/variables.scss';
+@import '../styles/mixins.scss';
 
 .main {
   display: flex;
   justify-content: center;
-  gap: 2rem;
-  align-items: center;
   height: 100vh;
+  flex-direction: column;
+  padding: 0 2rem;
+  gap: 1rem;
+
+  @include from(s) {
+    align-items: center;
+    flex-direction: row;
+    gap: 2rem;
+  }
+
+  @include from(l) {
+    padding: 0;
+  }
 }
 
 .img {
-  width: 400px;
-  height: 400px;
+  width: 100%;
   border-radius: 20px;
   object-fit: fill;
   transition: transform .5s;
   cursor: pointer;
+  max-height: 300px;
+
+  @include from(s) {
+    width: auto;
+    height: 200px;
+    max-width: 400px;
+  }
+  @include from(m) {
+    height: 300px;
+  }
 }
 
 .img:hover {
@@ -24,6 +45,12 @@
 
 .highlight {
   color: $color-primary;
+}
+
+.title {
+  @include from(l) {
+    font-size: 2.5rem;
+  }
 }
 
 .button {

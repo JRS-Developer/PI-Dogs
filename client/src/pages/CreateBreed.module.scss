@@ -1,16 +1,23 @@
 @import '../styles/variables.scss';
+@import '../styles/mixins.scss';
 
 .container {
   display: flex;
   padding: 1.75rem 1rem 1rem 1rem;
   justify-content: space-around;
+  gap: 1rem;
 }
 
 .sideImg {
+  display:none;
   width: 350px;
   object-fit: cover;
   height: calc(90vh - #{$navbar-height});
   border-radius: 10px;
+
+  @include from(m) {
+    display: block;
+  }
 }
 
 .sideForm {
@@ -23,6 +30,12 @@
   height: 100%;
   flex-direction: column;
   justify-content: space-evenly;
+  gap: .25rem;
+}
+
+.form label {
+  display: inline-block;
+  margin-bottom: .25rem;
 }
 
 .title {
@@ -44,7 +57,6 @@
 .oneInput {
   display: flex;
   flex-direction: column;
-  gap: .3rem 2rem;
 }
 
 .multiInput {

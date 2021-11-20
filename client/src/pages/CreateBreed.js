@@ -8,7 +8,7 @@ import DogImg from "../images/dog_background.jpg";
 import Select from "../components/Select/Select";
 import { HiOutlineUpload } from "react-icons/hi";
 import styles from "./CreateBreed.module.scss";
-import ErrorMessage from '../components/ErrorMessage/ErrorMessage'
+import ErrorMessage from "../components/ErrorMessage/ErrorMessage";
 
 const initialInputs = {
   name: "",
@@ -157,9 +157,8 @@ const CreateBreed = () => {
             {errors.name && <ErrorMessage>{errors.name}</ErrorMessage>}
           </div>
           <div className={styles.multiInput}>
-            <label htmlFor="min_weight">Min Weight</label>
-            <label htmlFor="max_weight">Max Weight</label>
             <div>
+              <label htmlFor="min_weight">Min Weight</label>
               <Input
                 type="number"
                 placeholder="Min Weight"
@@ -176,6 +175,7 @@ const CreateBreed = () => {
               )}
             </div>
             <div>
+              <label htmlFor="max_weight">Max Weight</label>
               <Input
                 type="number"
                 placeholder="Max Weight"
@@ -189,9 +189,8 @@ const CreateBreed = () => {
             </div>
           </div>
           <div className={styles.multiInput}>
-            <label htmlFor="min_height">Min Height</label>
-            <label htmlFor="max_height">Max Height</label>
             <div>
+              <label htmlFor="min_height">Min Height</label>
               <Input
                 type="number"
                 placeholder="Min Height"
@@ -208,6 +207,7 @@ const CreateBreed = () => {
               )}
             </div>
             <div>
+              <label htmlFor="max_height">Max Height</label>
               <Input
                 type="number"
                 placeholder="Max Height"
@@ -221,9 +221,8 @@ const CreateBreed = () => {
             </div>
           </div>
           <div className={styles.multiInput}>
-            <label htmlFor="min_years">Min Years</label>
-            <label htmlFor="max_years">Max Years</label>
             <div>
+              <label htmlFor="min_years">Min Years</label>
               <Input
                 type="number"
                 placeholder="Min Years"
@@ -240,6 +239,7 @@ const CreateBreed = () => {
               )}
             </div>
             <div>
+              <label htmlFor="max_years">Max Years</label>
               <Input
                 type="number"
                 placeholder="Max Years"

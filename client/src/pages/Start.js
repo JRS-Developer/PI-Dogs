@@ -32,7 +32,7 @@ const Start = () => {
         onClick={setRandomBreed}
       />
       <div>
-        <h1>
+        <h1 className={styles.title}>
           Welcome to <b className={styles.highlight}>Dogs J!</b>
         </h1>
         <p>

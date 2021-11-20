@@ -6,3 +6,12 @@ $error: #ef233c;
 
 // Heights
 $navbar-height: 4rem;
+
+// Breakpoints
+$breakpoints: (
+  xs: 576px,
+	s: 640px,
+	m: 768px,
+	l: 1024px,
+	lx: 1200px,
+);
