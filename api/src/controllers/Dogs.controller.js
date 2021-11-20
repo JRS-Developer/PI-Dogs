@@ -111,6 +111,7 @@ const createDog = async (req, res) => {
       temperaments,
     } = req.body;
 
+    // Check that the values are provided
     if (!name)
       return res
         .status(403)
@@ -119,6 +120,22 @@ const createDog = async (req, res) => {
       return res
         .status(403)
         .json({ message: "Please provide the min and max height and weight" });
+    // CHeck that the min values are not higher that the max values
+    if (min_height > max_height) {
+      return res.status(403).json({
+        message: 'The min height cant be higher that max height'
+      })
+    }
+    if (min_weight > max_weight) {
+      return res.status(403).json({
+        message: "The min weight cant be higher that max weight"
+      })
+    }
+    if (min_years && max_years && min_years > max_years) {
+      return res.status(403).json({
+        message: "The min years cant be higher that max years",
+      })
+    }
 
     const lifeSpanY =
       min_years && max_years ? `${min_years} - ${max_years} years` : undefined;
