@@ -101,3 +101,11 @@
 .fullW {
   width: 100%;
 }
+
+.error {
+  outline: 1px solid $error;
+}
+
+.error:focus-visible {
+  outline: 1px solid $error;
+}
