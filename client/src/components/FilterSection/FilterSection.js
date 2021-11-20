@@ -1,32 +1,35 @@
 import { useDispatch } from "react-redux";
-import {
-  sortBreeds,
-  filterByTemperament,
-  filterByType,
-} from "../../actions/BreedsActions";
+import { filterBreeds, setIsFiltering } from "../../actions/BreedsActions";
 import Input from "../Input/Input";
 import useGetTemperaments from "../../hooks/useGetTemperaments";
 import useGetBreeds from "../../hooks/useGetBreeds";
 import { useState, useEffect } from "react";
-import styles from './FilterSection.module.scss'
-import Select from '../Select/Select'
+import styles from "./FilterSection.module.scss";
+import Select from "../Select/Select";
+import { useSelector } from 'react-redux'
 
 const FilterSection = () => {
   const [name, setName] = useState("");
   const [query, setQuery] = useState("");
   const { temperaments } = useGetTemperaments();
   const dispatch = useDispatch();
-  useGetBreeds(name);
+  const { breeds } = useGetBreeds(name);
+  const isFiltering = useSelector((state) => state.breeds.isFiltering)
 
+  // This function changes the query value, when the query values changes, then execute the useffect that is under, when it is executed, then it execute the setName function after some seconds, and when the name is changed, then executes the useGetBreeds with that name. Really crazy.
   const handleChangeName = (e) => setQuery(e.target.value);
 
-  const handleChangeType = (e) => dispatch(filterByType(e.target.value));
-
-  const handleChangeTemp = (e) => dispatch(filterByTemperament(e.target.value));
-
   const handleChangeSort = (e) => {
+    const { name, value } = e.target;
     const { order, param } = e.target?.selectedOptions[0]?.dataset;
-    dispatch(sortBreeds(order, param));
+    dispatch(setIsFiltering(name, { value, param, order }));
+    dispatch(filterBreeds());
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    dispatch(setIsFiltering(name, value));
+    dispatch(filterBreeds());
   };
 
   useEffect(() => {
@@ -36,6 +39,11 @@ const FilterSection = () => {
     return () => clearTimeout(timeout);
   }, [query]);
 
+  // When the query name changes, the breeds changes, then we filter them
+  useEffect(() => {
+    dispatch(filterBreeds())
+  }, [breeds, dispatch])
+
   return (
     <div className={styles.container}>
       <Input
@@ -43,7 +51,7 @@ const FilterSection = () => {
         name="name"
         onChange={handleChangeName}
       />
-      <Select name="temperament" defaultValue="" onChange={handleChangeTemp}>
+      <Select name="temperament" defaultValue={isFiltering.temperament} onChange={handleChange}>
         <option value="">All</option>
         {temperaments.map((temp) => (
           <option key={temp.name} value={temp.name}>
@@ -51,25 +59,25 @@ const FilterSection = () => {
           </option>
         ))}
       </Select>
-      <Select name="type" onChange={handleChangeType}>
+      <Select name="type" onChange={handleChange} defaultValue={isFiltering.type}>
         <option value="">All</option>
         <option value="real">Real</option>
         <option value="created">Created</option>
       </Select>
-      <Select name="sort" defaultValue="" onChange={handleChangeSort}>
-        <option value="" disabled hidden>
+      <Select name="sort" defaultValue={isFiltering.sort.value} onChange={handleChangeSort}>
+        <option value="" data-param="name" data-order="ASC">
           Sort By
         </option>
-        <option data-param="name" data-order="ASC">
+        <option value="asc name" data-param="name" data-order="ASC">
           A-Z
         </option>
-        <option data-param="name" data-order="DESC">
+        <option value="desc name" data-param="name" data-order="DESC">
           Z-A
         </option>
-        <option data-param="weight" data-order="ASC">
+        <option value="min_weight" data-param="weight" data-order="ASC">
           Min Weight
         </option>
-        <option data-param="weight" data-order="DESC">
+        <option value="max_weight" data-param="weight" data-order="DESC">
           Max Weight
         </option>
       </Select>

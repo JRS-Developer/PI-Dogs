@@ -6,7 +6,7 @@ const BreedsList = ({ breeds }) => (
     {breeds.length ? (
       breeds.map((b) => <BreedCard {...b} key={b.id} />)
     ) : (
-        <div>No Results</div>
+        <div className={styles.noResults}>No Results</div>
       )}
   </ul>
 );

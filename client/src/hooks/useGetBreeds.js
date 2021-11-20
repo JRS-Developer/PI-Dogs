@@ -13,6 +13,9 @@ const useGetBreeds = (name) => {
     name && (query += `?name=${name}`);
 
     const data = await get(query);
+    // Si no retorna un array, entonces, setea los breeds como un array vacio
+    if (!Array.isArray(data)) return dispatch(setBreeds([]));
+
     response.ok && dispatch(setBreeds(data));
   }, [get, response, dispatch, name]);
 

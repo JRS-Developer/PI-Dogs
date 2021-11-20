@@ -1,4 +1,7 @@
 const sortByNumber = (a, b, order) => {
+  // convert the numbers in a integer, in case it is a float number
+  a = Math.trunc(a)
+  b = Math.trunc(b)
   if (order === "ASC") {
     return a - b;
   } else if (order === "DESC") {

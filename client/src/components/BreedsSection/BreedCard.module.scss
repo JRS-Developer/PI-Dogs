@@ -43,3 +43,9 @@
   text-decoration: none;
   color: $color-primary;
 }
+
+.temperament {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -16,3 +16,11 @@
     grid-template-columns: repeat(3,1fr);
   }
 }
+
+.noResults {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 60vh;
+}
