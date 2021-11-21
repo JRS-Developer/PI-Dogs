@@ -9,6 +9,9 @@
 
 .info {
   display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10rem;
 }
 
 .img {
@@ -21,9 +24,7 @@
 .textContainer {
   display: flex;
   flex-direction: column;
-  width: 100%;
   justify-content: center;
-  margin-left: 4rem;
 }
 
 .name {
