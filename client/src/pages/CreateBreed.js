@@ -103,7 +103,8 @@ const CreateBreed = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (errors.hasErrors) return;
+    // Si hay errores, entonces no realizara el envio de la data al server
+    if (errors.hasErrors) return
 
     const form = { ...inputs, temperaments: selectedTemps };
 
