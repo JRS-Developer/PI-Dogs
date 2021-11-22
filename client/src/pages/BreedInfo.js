@@ -44,7 +44,7 @@ const BreedInfo = () => {
         </Button>
       </div>
       {loading ? (
-        <div>Loading...</div>
+        <div className={styles.loading}>Loading...</div>
       ) : (
           <div className={styles.info}>
             <img

@@ -1,6 +1,7 @@
 import BreedsPagination from "../components/BreedsSection/BreedsPagination";
 import FilterSection from "../components/FilterSection/FilterSection";
 import useGetBreeds from "../hooks/useGetBreeds";
+import styles from './Principal.module.scss'
 
 const Principal = () => {
   const { error, loading } = useGetBreeds();
@@ -9,7 +10,7 @@ const Principal = () => {
     <>
       <FilterSection />
       {loading && !error ? (
-        <div>Loading...</div>
+        <div className={styles.loading}>Loading...</div>
       ) : (
           <BreedsPagination breedsPerPage={8} />
         )}

@@ -47,14 +47,13 @@ const CreateBreed = () => {
     const { name, value } = input;
 
     // Check empty values
-    if (value === "" && !name.includes("years")) {
+    if (value === "" && input.required) {
       newErrors[name] = "This value is required";
       newErrors.hasErrors = true;
-    } else if (value !== "" && !name.includes("years")) {
+    } else if (value !== "" || !input.required) {
       newErrors[name] = "";
       newErrors.hasErrors = false;
     }
-
     // Check min and max values
     const property = name.substring(name.lastIndexOf("_") + 1); // Get what is after the underscore
     const min = `min_${property}`;
@@ -104,7 +103,15 @@ const CreateBreed = () => {
     e.preventDefault();
 
     // Si hay errores, entonces no realizara el envio de la data al server
-    if (errors.hasErrors) return
+    if (errors.hasErrors) return;
+    // Checkeo otra vez en caso de errores.
+    let newErrors = { ...errors };
+    Array.from(e.target.elements).forEach((input) => {
+      newErrors = validate(input, inputs, newErrors);
+      setErrors(newErrors);
+    });
+
+    if (newErrors.hasErrors) return;
 
     const form = { ...inputs, temperaments: selectedTemps };
 
@@ -143,7 +150,11 @@ const CreateBreed = () => {
       <div className={styles.sideForm}>
         <h3 className={styles.title}>Create a new Dog!</h3>
         <hr className={styles.separator} />
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <form
+          onSubmit={handleSubmit}
+          className={styles.form}
+          name="Create Breed Form"
+        >
           <div className={styles.oneInput}>
             <label htmlFor="name">Name</label>
             <Input
@@ -186,7 +197,11 @@ const CreateBreed = () => {
                 min="1"
                 value={inputs.max_weight}
                 onChange={handleChange}
+                className={errors.max_weight ? styles.error : ""}
               />
+              {errors.max_weight && (
+                <ErrorMessage>{errors.max_weight}</ErrorMessage>
+              )}
             </div>
           </div>
           <div className={styles.multiInput}>
@@ -218,7 +233,11 @@ const CreateBreed = () => {
                 min="1"
                 value={inputs.max_height}
                 onChange={handleChange}
+                className={errors.max_height ? styles.error : ""}
               />
+              {errors.max_height && (
+                <ErrorMessage>{errors.max_height}</ErrorMessage>
+              )}
             </div>
           </div>
           <div className={styles.multiInput}>
@@ -227,7 +246,6 @@ const CreateBreed = () => {
               <Input
                 type="number"
                 placeholder="Min Years"
-                required
                 name="min_years"
                 id="min_years"
                 min="1"
@@ -244,7 +262,6 @@ const CreateBreed = () => {
               <Input
                 type="number"
                 placeholder="Max Years"
-                required
                 name="max_years"
                 id="max_years"
                 min="1"
@@ -296,7 +313,7 @@ const CreateBreed = () => {
           <Input
             hidden
             type="file"
-            placeholder="Image url"
+            placeholder="image"
             name="image"
             id="image"
             accept="image/*"
