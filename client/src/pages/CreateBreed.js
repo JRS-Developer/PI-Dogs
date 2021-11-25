@@ -1,6 +1,7 @@
 import useFetch from "use-http";
 import { uploadImage } from "../helpers/uploadImage";
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import useGetTemperaments from "../hooks/useGetTemperaments";
 import Button from "../components/Button/Button";
 import Input from "../components/Input/Input";
@@ -27,20 +28,44 @@ const initialErrors = {
 
 const CreateBreed = () => {
   const { temperaments: allTemperaments } = useGetTemperaments();
-  let { post, cache, loading } = useFetch();
+  let { post, cache, loading, response } = useFetch();
 
-  const [loadingImg, setLoadingImg] = useState(false);
   const [image, setImage] = useState(null);
   const [temps, setTemps] = useState([]);
   const [inputs, setInputs] = useState(initialInputs);
   const [lastInput, setLastInput] = useState(null);
-  const [errors, setErrors] = useState(initialErrors);
+  const [inputErrors, setInputErrors] = useState(initialErrors);
   const [selectedTemps, setSelectedTemps] = useState([]);
 
-  const saveDog = async (dog) => {
-    await post("dogs", dog);
-    cache.clear();
-  };
+  const [loadingImg, setLoadingImg] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
+
+  const navigate = useNavigate();
+
+  const goHome = useCallback(() => navigate("/home"), [navigate]);
+
+  const saveDog = useCallback(
+    async (dog) => {
+      try {
+        const data = await post("dogs", dog);
+        cache.clear();
+        if (
+          response.status &&
+          response.status >= 200 &&
+          response.status < 300
+        ) {
+          setSuccess(true);
+        } else if (response.status > 300) {
+          setError(data.message);
+        }
+      } catch (e) {
+        console.error(e);
+        setError("Has ocurred an error with the request");
+      }
+    },
+    [response, cache, post]
+  );
 
   const validate = useCallback((input, allInputs, errors) => {
     const newErrors = { ...errors, hasErrors: false };
@@ -71,6 +96,17 @@ const CreateBreed = () => {
 
     return newErrors;
   }, []);
+
+  const validateAllInputs = (form) => {
+    let newErrors = { ...inputErrors };
+
+    Array.from(form.elements).forEach((input) => {
+      newErrors = validate(input, inputs, newErrors);
+      setInputErrors(newErrors);
+    });
+
+    return newErrors;
+  };
 
   const saveImage = async (file) => {
     setLoadingImg(true);
@@ -103,16 +139,12 @@ const CreateBreed = () => {
     e.preventDefault();
 
     // Si hay errores, entonces no realizara el envio de la data al server
-    if (errors.hasErrors) return;
+    if (inputErrors.hasErrors) return;
     // Checkeo otra vez en caso de errores.
-    let newErrors = { ...errors };
-    Array.from(e.target.elements).forEach((input) => {
-      newErrors = validate(input, inputs, newErrors);
-      setErrors(newErrors);
-    });
-
+    const newErrors = validateAllInputs(e.target);
     if (newErrors.hasErrors) return;
 
+    // Crea el objeto a ser enviado al servidor
     const form = { ...inputs, temperaments: selectedTemps };
 
     if (image) {
@@ -130,7 +162,7 @@ const CreateBreed = () => {
     setInputs(initialInputs);
     setImage(null);
 
-    saveDog(form);
+    await saveDog(form);
     setLoadingImg(false);
   };
 
@@ -141,8 +173,28 @@ const CreateBreed = () => {
   useEffect(() => {
     // When the lastInput used is updated then check the inputs and show the errors.
     lastInput &&
-      setErrors((old) => ({ ...old, ...validate(lastInput, inputs, old) }));
+      setInputErrors((old) => ({
+        ...old,
+        ...validate(lastInput, inputs, old),
+      }));
+
+    return () => setInputErrors(initialErrors);
   }, [lastInput, validate, inputs]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (success) goHome();
+    }, 2000);
+
+    return () => clearTimeout(timeout);
+  }, [success, goHome]);
+
+  useEffect(() => {
+    const changeError = () => setError(false);
+
+    const timeout = setTimeout(() => changeError(), 4000);
+    return () => clearTimeout(timeout);
+  }, [error]);
 
   return (
     <div className={styles.container}>
@@ -164,9 +216,11 @@ const CreateBreed = () => {
               required
               value={inputs.name}
               onChange={handleChange}
-              className={errors.name ? styles.error : ""}
+              className={inputErrors.name ? styles.error : ""}
             />
-            {errors.name && <ErrorMessage>{errors.name}</ErrorMessage>}
+            {inputErrors.name && (
+              <ErrorMessage>{inputErrors.name}</ErrorMessage>
+            )}
           </div>
           <div className={styles.multiInput}>
             <div>
@@ -180,10 +234,10 @@ const CreateBreed = () => {
                 id="min_weight"
                 value={inputs.min_weight}
                 onChange={handleChange}
-                className={errors.min_weight ? styles.error : ""}
+                className={inputErrors.min_weight ? styles.error : ""}
               />
-              {errors.min_weight && (
-                <ErrorMessage>{errors.min_weight}</ErrorMessage>
+              {inputErrors.min_weight && (
+                <ErrorMessage>{inputErrors.min_weight}</ErrorMessage>
               )}
             </div>
             <div>
@@ -197,10 +251,10 @@ const CreateBreed = () => {
                 min="1"
                 value={inputs.max_weight}
                 onChange={handleChange}
-                className={errors.max_weight ? styles.error : ""}
+                className={inputErrors.max_weight ? styles.error : ""}
               />
-              {errors.max_weight && (
-                <ErrorMessage>{errors.max_weight}</ErrorMessage>
+              {inputErrors.max_weight && (
+                <ErrorMessage>{inputErrors.max_weight}</ErrorMessage>
               )}
             </div>
           </div>
@@ -216,10 +270,10 @@ const CreateBreed = () => {
                 min="1"
                 value={inputs.min_height}
                 onChange={handleChange}
-                className={errors.min_height ? styles.error : ""}
+                className={inputErrors.min_height ? styles.error : ""}
               />
-              {errors.min_height && (
-                <ErrorMessage>{errors.min_height}</ErrorMessage>
+              {inputErrors.min_height && (
+                <ErrorMessage>{inputErrors.min_height}</ErrorMessage>
               )}
             </div>
             <div>
@@ -233,10 +287,10 @@ const CreateBreed = () => {
                 min="1"
                 value={inputs.max_height}
                 onChange={handleChange}
-                className={errors.max_height ? styles.error : ""}
+                className={inputErrors.max_height ? styles.error : ""}
               />
-              {errors.max_height && (
-                <ErrorMessage>{errors.max_height}</ErrorMessage>
+              {inputErrors.max_height && (
+                <ErrorMessage>{inputErrors.max_height}</ErrorMessage>
               )}
             </div>
           </div>
@@ -251,10 +305,10 @@ const CreateBreed = () => {
                 min="1"
                 value={inputs.min_years}
                 onChange={handleChange}
-                className={errors.min_years ? styles.error : ""}
+                className={inputErrors.min_years ? styles.error : ""}
               />
-              {errors.min_years && (
-                <ErrorMessage>{errors.min_years}</ErrorMessage>
+              {inputErrors.min_years && (
+                <ErrorMessage>{inputErrors.min_years}</ErrorMessage>
               )}
             </div>
             <div>
@@ -321,10 +375,22 @@ const CreateBreed = () => {
           />
           <Button
             type="submit"
-            className={styles.submit}
-            disabled={loading || loadingImg || errors.hasErrors ? true : false}
+            className={`${styles.submit} ${success ? styles.success : ""} ${
+              error ? styles.errorBtn : ""
+              }`}
+            disabled={
+              loading || loadingImg || inputErrors.hasErrors || success
+                ? true
+                : false
+            }
           >
-            {loading || loadingImg ? "Loading" : "Send"}
+            {error
+              ? error
+              : success
+                ? "Dog created successfully!"
+                : loading || loadingImg
+                  ? "Loading"
+                  : "Send"}
           </Button>
         </form>
       </div>

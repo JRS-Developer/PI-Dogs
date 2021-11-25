@@ -118,6 +118,16 @@
   outline: 1px solid $error;
 }
 
+.errorBtn {
+  color: $color-secondary;
+  background-color: $error;
+}
+
+.success {
+  background-color: $success;
+  color: $color-secondary;
+}
+
 .error:focus-visible {
   outline: 1px solid $error;
 }

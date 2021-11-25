@@ -5,7 +5,7 @@ import Button from "../components/Button/Button";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import styles from "./BreedInfo.module.scss";
-import defaultImg from '../images/dog.png'
+import defaultImg from "../images/dog.png";
 
 const BreedInfo = () => {
   const { get, response, loading } = useFetch();
@@ -29,7 +29,7 @@ const BreedInfo = () => {
     response.ok && setBreed(data);
   }, [get, idBreed, response, redirect]);
 
-  const temperaments = breed?.temperaments?.map((t) => t.name).join(",");
+  const temperaments = breed?.temperaments?.map((t) => t.name).join(",") || breed.temperament
 
   useEffect(() => {
     getBreedInfo();
@@ -69,10 +69,12 @@ const BreedInfo = () => {
                 <b>Weight: </b>
                 {breed.weight} kg
             </p>
-              <p>
-                <b>Life Span: </b>
-                {breed.life_span}
-              </p>
+              {breed.life_span && (
+                <p>
+                  <b>Life Span: </b>
+                  {breed.life_span}
+                </p>
+              )}
             </div>
           </div>
         )}

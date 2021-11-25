@@ -1,13 +1,24 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import { Provider } from "react-redux";
+import { Provider as ProviderFetch } from "use-http";
+import { BrowserRouter } from "react-router-dom";
 import CreateBreed from "../pages/CreateBreed";
 import store from "../store/index";
+
+const { REACT_APP_API_URL } = process.env;
+
+if (!REACT_APP_API_URL)
+  console.error("Please provide the REACT_APP_API_URL env variable");
 
 describe("<CreateBreed />", () => {
   beforeEach(() => {
     render(
       <Provider store={store}>
-        <CreateBreed />
+        <ProviderFetch url={REACT_APP_API_URL}>
+          <BrowserRouter>
+              <CreateBreed />
+          </BrowserRouter>
+        </ProviderFetch>
       </Provider>
     );
   });
@@ -129,9 +140,7 @@ describe("<CreateBreed />", () => {
       fireEvent.change(max, { target: { value: 1 } });
       fireEvent.change(max, { target: { value: "" } });
 
-      expect(
-        screen.queryByText(/this value is required/i)
-      ).toBeNull();
+      expect(screen.queryByText(/this value is required/i)).toBeNull();
     });
     it("should show group of error messages when the form is submitted and the required inputs are empty", async () => {
       const form = screen.getByRole("form");
@@ -149,6 +158,36 @@ describe("<CreateBreed />", () => {
       fireEvent.change(input, { target: { value: "" } });
 
       expect(screen.getByRole("button", { name: "Send" })).toBeDisabled();
+    });
+  });
+
+  jest.mock("use-http");
+  describe("Submit form", () => {
+    beforeEach(() => {
+      const weightInputs = screen.getAllByPlaceholderText(/weight/i);
+      const heightInputs = screen.getAllByPlaceholderText(/height/i);
+      const nameInput = screen.getByPlaceholderText(/name/i);
+      const yearsInput = screen.getAllByPlaceholderText(/years/i);
+      const form = screen.getByRole("form");
+
+      const dogName = "A good dog" + new Date();
+
+      fireEvent.change(nameInput, { target: { value: dogName } });
+      weightInputs.forEach((w) =>
+        fireEvent.change(w, { target: { value: 1 } })
+      );
+      heightInputs.forEach((w) =>
+        fireEvent.change(w, { target: { value: 1 } })
+      );
+      yearsInput.forEach((w) => fireEvent.change(w, { target: { value: 1 } }));
+      fireEvent.submit(form);
+    });
+    afterEach(cleanup);
+    it("should show a loading message while is sending the request", () => {
+      expect(screen.getByText(/loading/i)).toBeInTheDocument();
+    });
+    it("should not show any error message when the form is submitted correctly", async () => {
+      expect(screen.queryAllByText(/required/i)).toHaveLength(0);
     });
   });
 });
