@@ -123,17 +123,20 @@ const CreateBreed = () => {
   const handleChangeImg = (e) => setImage(e.target.files[0]);
 
   const handleChangeTemps = (e) => {
-    const value = e.target.value;
-    const isSelected = selectedTemps.some((s) => s === value);
+    const selected = e.target.selectedOptions[0];
+    const name = selected.text;
+    const id = selected.id;
 
-    if (value && !isSelected) {
+    const isSelected = selectedTemps.some((s) => s.name === name);
+
+    if (name && !isSelected) {
       // Añado el temperamento en el estado de selectedTemps, asi puedo mostrarlos al usuario.
-      setSelectedTemps((old) => [...old, value]);
+      setSelectedTemps((old) => [...old, { id, name }]);
     }
   };
 
   const removeSelected = (name) =>
-    setSelectedTemps((old) => old.filter((t) => t !== name));
+    setSelectedTemps((old) => old.filter((t) => t.name !== name));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -145,7 +148,7 @@ const CreateBreed = () => {
     if (newErrors.hasErrors) return;
 
     // Crea el objeto a ser enviado al servidor
-    const form = { ...inputs, temperaments: selectedTemps };
+    const form = { ...inputs, temperaments: selectedTemps.map(t => t.id) };
 
     if (image) {
       try {
@@ -337,7 +340,7 @@ const CreateBreed = () => {
                   Select One
                 </option>
                 {temps.map((t) => (
-                  <option key={t.name} value={t.name}>
+                  <option key={t.name} value={t.name} id={t.id}>
                     {t.name}
                   </option>
                 ))}
@@ -349,9 +352,9 @@ const CreateBreed = () => {
                   type="button"
                   className={styles.temp}
                   key={i}
-                  onClick={() => removeSelected(t)}
+                  onClick={() => removeSelected(t.name)}
                 >
-                  {t}
+                  {t.name}
                 </Button>
               ))}
             </div>

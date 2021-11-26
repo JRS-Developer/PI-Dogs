@@ -29,7 +29,6 @@ const BreedInfo = () => {
     response.ok && setBreed(data);
   }, [get, idBreed, response, redirect]);
 
-  const temperaments = breed?.temperaments?.map((t) => t.name).join(",") || breed.temperament
 
   useEffect(() => {
     getBreedInfo();
@@ -55,12 +54,6 @@ const BreedInfo = () => {
             />
             <div className={styles.textContainer}>
               <h3 className={styles.name}>{breed.name}</h3>
-              {temperaments && (
-                <p>
-                  <b>Temperaments: </b>
-                  {temperaments}
-                </p>
-              )}
               <p>
                 <b>Height: </b>
                 {breed.height} cm
@@ -73,6 +66,12 @@ const BreedInfo = () => {
                 <p>
                   <b>Life Span: </b>
                   {breed.life_span}
+                </p>
+              )}
+              {breed.temperament && (
+                <p>
+                  <b>Temperaments: </b>
+                  {breed.temperament}
                 </p>
               )}
             </div>
