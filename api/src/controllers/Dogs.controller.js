@@ -34,7 +34,7 @@ const getDogs = async (req, res, next) => {
     // The JSON.parse(JSON.stringify) is to can use the map,it doesn't work without it
     breedsDB = joinTemperaments(breedsDB);
 
-    // INFO: This is to get the data by name, the API of dogs searing by namedoesn't return the images, so I prefered this option
+    // INFO: This is to get the data by name, the API of dogs searching by name doesn't return the images, so I prefered this option
     const breeds = name
       ? allBreedsApi.filter((breed) => {
         const regex = new RegExp(name, "i");
@@ -69,7 +69,7 @@ const getDogById = async (req, res, next) => {
     const { idRaza } = req.params;
     let query = breedsQ;
 
-    const breedDB =
+    let breedDB =
       isUUID(idRaza) &&
       (await Dog.findByPk(idRaza, {
         attributes: ["id", "name", "image", "weight", "height", "life_span"],
@@ -81,7 +81,10 @@ const getDogById = async (req, res, next) => {
       }));
 
     //INFO: if the data is in the database, then return it. If not then use the API
-    if (breedDB) return res.json(breedDB);
+    if (breedDB) {
+      breedDB = joinTemperaments([breedDB])[0];
+      return res.json(breedDB);
+    }
 
     const { data: breedsApi } = await axios.get(query);
     const breed = breedsApi.find((b) => b.id === Number(idRaza));
@@ -164,11 +167,7 @@ const createDog = async (req, res, next) => {
     //INFO: check if the name is already taked, if true, then return a message that already is created if not, the add the temperaments and show a succesfull message
     const [breedDB, created] = await Dog.findOrCreate(condition);
     if (created) {
-      temperaments?.length &&
-        temperaments.forEach(async (el) => {
-          const temp = await Temperament.findOne({ where: { name: el } });
-          temp?.id && (await breedDB.setTemperaments(temp.id));
-        });
+      temperaments?.length && (await breedDB.setTemperaments(temperaments));
 
       return res.status(201).json({ message: "Data saved sucessfully" });
     }
