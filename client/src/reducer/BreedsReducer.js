@@ -74,7 +74,7 @@ export default function breeds(state = initialState, action) {
     }
     case FILTER_BREEDS: {
       const { breeds, isFiltering } = state;
-      let newBreeds = breeds;
+      let newBreeds = [...breeds];
 
       if (isFiltering.type) {
         const type = isFiltering.type;
