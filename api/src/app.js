@@ -28,19 +28,4 @@ server.use((req, res, next) => {
 
 server.use("/", routes);
 
-// Error catching endware.
-server.use((err, _req, res) => {
-  // eslint-disable-line no-unused-vars
-  const errorStatus = err.status || 500
-  console.error(err);
-  if (errorStatus === 500) {
-    res
-      .status(errorStatus)
-      .json({ error: "An error with the server has ocurred" });
-  } else {
-    const message = err.message || err;
-    res.status(errorStatus).json({ error: message });
-  }
-});
-
 module.exports = server;

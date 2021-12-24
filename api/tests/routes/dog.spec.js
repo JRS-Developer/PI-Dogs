@@ -154,7 +154,7 @@ describe("Dogs routes", () => {
       expect(201);
     });
     it("should return a message when there is already a breed with that name", async () => {
-      const newDog = { ...dog, name: 'Dug' }
+      const newDog = { ...dog, name: "Dug" };
       await agent.post("/dogs/").send(newDog);
       const res = await agent.post("/dogs/").send(newDog);
 
