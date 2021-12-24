@@ -25,9 +25,20 @@ let options = {
 if (NODE_ENV === "production") {
   options = {
     ...options,
-    dialectOptions: {
-      ssl: true,
+    pool: {
+      max: 3,
+      min: 1,
+      idle: 10000,
     },
+    dialectOptions: {
+      ssl: {
+        require: true,
+        // Ref.: https://github.com/brianc/node-postgres/issues/2009
+        rejectUnauthorized: false,
+      },
+      keepAlive: true,
+    },
+    ssl: true,
   };
 }
 
