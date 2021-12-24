@@ -4,7 +4,9 @@ const fs = require("fs");
 const path = require("path");
 const { DB_USER, DB_PASSWORD, DB_HOST, NODE_ENV, DATABASE_URL } = process.env;
 
-if (NODE_ENV !== "development" && (!DB_USER || !DB_PASSWORD || !DB_HOST)) {
+if (NODE_ENV === "development") {
+  if (!DB_USER || !DB_PASSWORD || !DB_HOST) {
+  }
   console.error(
     "Please provide all the env variables, DB_USER, DB_PASSWORD AND DB_HOST"
   );
@@ -15,10 +17,21 @@ const uri =
     ? DATABASE_URL
     : `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/dogs`;
 
-const sequelize = new Sequelize(uri, {
+const options = {
   logging: false, // set to console.log to see the raw SQL queries
   native: false, // lets Sequelize know we can use pg-native for ~30% more speed
-});
+};
+
+if (NODE_ENV === "production") {
+  options = {
+    ...options,
+    dialectOptions: {
+      ssl: true,
+    },
+  };
+}
+
+const sequelize = new Sequelize(uri, options);
 const basename = path.basename(__filename);
 
 const modelDefiners = [];
