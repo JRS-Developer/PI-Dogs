@@ -8,6 +8,12 @@
   <img height="200" src="./dog.png" />
 </p>
 
+## Resultado
+
+<img src="./dogs-j.png"/>
+<img src="./dogs-j-breedsList.png" />
+<img src="./dogs-j-createBreed.png" />
+
 ## Objetivos del Proyecto
 
 - Construir una App utlizando React, Redux, Node y Sequelize.
